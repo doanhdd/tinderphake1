@@ -15,6 +15,7 @@ db.once('open', function() {
 });
 
 var user= new mongoose.Schema({
+    avatar:String,
     email:String,
     pass:String,
     username:String,
@@ -40,10 +41,10 @@ app.get('/', function (request,
 app.get('/dangki.handlebars', function (req, res) {
 
     var action=userInsert({
-        email:"String1",
-        pass:"Stri1ng",
-        username:"Strin1g",
-        avatar:"Strin1g"
+        avatar:req.body.avatar,
+        email:req.body.email,
+        pass:req.body.pass,
+        username:req.body.username,
     }).save(function (error){
         if(error){
             res.render('dangki', { layout: 'main' });
