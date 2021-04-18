@@ -12,7 +12,7 @@ mongoose.connect('mongodb+srv://doanh:doanh@doanhcluster.arwi8.mongodb.net/Tinde
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
-
+app.use(express.static('assets/img/'));
 app.use(express.static('assets'));
 // app.use(express.static('public/data'));
 app.set('view engine', 'handlebars');
@@ -79,7 +79,7 @@ app.get('/dangki', function (req, res) {
 app.post("/add", upload, function (req, res) {
     var connectUsers = db.model('listUser1', user);
     connectUsers({
-        avatars: req.file.originalname,
+        avatars: linkanh+req.file.originalname,
         email: req.body.emails,
         pass: req.body.passwords,
         username: req.body.usernames,
@@ -128,7 +128,7 @@ app.post('/update', uploads,function (req, res) {
     var connectUsers = db.model('listUser1', user);
     console.log("da chay vao day uppdate");
     connectUsers.updateOne({_id: req.body.ids}, {
-        avatars: req.file.originalname,
+        avatars: linkanh+req.file.originalname,
         email: req.body.emailsa,
         pass: req.body.passwordsa,
         username: req.body.usernamesa,
