@@ -3,10 +3,8 @@ var expressHbs = require('express-handlebars')
 var app = express();
 const Handlebars = require("handlebars");
 var multer = require('multer');
-var linkanh="img/";
-app.listen(process.env.PORT || '3001', function () {
-    console.log('doanh ')
-});
+var linkanh = "img/";
+
 const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')
 // getting-started.js
 const mongoose = require('mongoose');
@@ -54,6 +52,13 @@ var upload = multer({
         fileSize: 1 * 1024 * 1024, // gioi han file size <= 1MB
     }
 }).single('avatars')
+var uploads = multer({
+    dest: ('./assets/img')
+    , storage: storage,
+    limits: {
+        fileSize: 1 * 1024 * 1024, // gioi han file size <= 1MB
+    }
+}).single('avatarsa')
 
 var user = new mongoose.Schema({
     avatars: String,
@@ -74,7 +79,7 @@ app.get('/dangki', function (req, res) {
 app.post("/add", upload, function (req, res) {
     var connectUsers = db.model('listUser1', user);
     connectUsers({
-        avatars: linkanh+req.file.originalname,
+        avatars: req.file.originalname,
         email: req.body.emails,
         pass: req.body.passwords,
         username: req.body.usernames,
@@ -112,39 +117,34 @@ app.get("/delete/:id", function (req, res) {
         if (error) {
             res.send("da co loi xay ra" + error)
         } else {
-
-            res.send("ok" + error)
+            res.send("ok")
         }
     })
 
 })
 
-app.get('/update/:id', function (req, res) {
+
+app.post('/update', uploads,function (req, res) {
     var connectUsers = db.model('listUser1', user);
-    connectUsers.findById(req.params.id, function (err, user) {
+    console.log("da chay vao day uppdate");
+    connectUsers.updateOne({_id: req.body.ids}, {
+        avatars: req.file.originalname,
+        email: req.body.emailsa,
+        pass: req.body.passwordsa,
+        username: req.body.usernamesa,
+    }, function (err, user) {
         if (err) {
             console.log("đã lỗi " + err.message);
         } else {
-            res.render('login', {update: user})
+            res.render('login');
         }
     })
+
 })
-// app.post('/update/:id', upload, function (req, res) {
-//     var connectUsers = db.model('listUser1', user);
-//     connectUsers.updateOne({_id: req.body.id}, {
-//         avatars: linkanh+req.file.originalname,
-//         email: req.body.emailsa,
-//         pass: req.body.passwordsa,
-//         username: req.body.usernamesa,
-//     }, function (err, user) {
-//         if (err) {
-//             console.log("đã lỗi " + err.message);
-//         } else {
-//             res.render('login');
-//         }
-//     })
-// })
 
 app.get('/chinh', function (req, res) {
     res.render("chinh", {layout: 'main',});
+});
+app.listen(process.env.PORT || '3000', function () {
+    console.log('doanh')
 });
